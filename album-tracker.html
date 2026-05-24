@@ -8,53 +8,146 @@
   <style>
     @page {
       size: letter portrait;
-      margin: 0.15in;
+      margin: 0;
+    }
+    #missing-list-container {
+      display: none;
     }
     @media print {
+      /* --- Global Print Styles --- */
       body {
         background-color: white !important;
         font-size: 8px !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
-      .print-hide {
+
+      /* --- Default Print Mode (Full Album) --- */
+      body:not(.print-mode-missing) .print-hide,
+      body:not(.print-mode-missing) #missing-list-container {
         display: none !important;
       }
-      .print-grid {
+      body:not(.print-mode-missing) .print-grid {
         display: grid !important;
         grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
         gap: 0.1rem !important;
       }
-      .print-card {
+      body:not(.print-mode-missing) .print-card {
         break-inside: avoid;
         box-shadow: none !important;
         border: 1px solid #94a3b8 !important;
         margin-bottom: 0 !important;
       }
-      .print-card > div:first-child {
-        padding: 2px !important;
+      body:not(.print-mode-missing) .print-card > div:first-child { padding: 2px !important; }
+      body:not(.print-mode-missing) .print-card h3 { font-size: 8px !important; }
+      body:not(.print-mode-missing) .sticker-btn {
+        border-width: 1px !important; height: auto !important; padding: 0 !important;
+        font-size: 5px !important; aspect-ratio: auto !important; min-height: 10px;
       }
-      .print-card h3 {
-        font-size: 8px !important;
+      body:not(.print-mode-missing) .sticker-filled {
+        background-color: #1e293b !important; color: #fff !important;
+        border-color: #0f172a !important; border-width: 2px !important;
       }
-      .sticker-btn {
-        border-width: 1px !important;
-        height: auto !important;
-        padding: 0 !important;
-        font-size: 5px !important;
-        aspect-ratio: auto !important;
-        min-height: 10px;
+      body:not(.print-mode-missing) .country-row { padding: 0.05rem !important; border-bottom: 1px solid #94a3b8 !important; }
+      body:not(.print-mode-missing) .flag-img { width: 10px !important; }
+
+      /* --- Missing List Print Mode --- */
+      body.print-mode-missing header,
+      body.print-mode-missing main,
+      body.print-mode-missing #reset-modal {
+        display: none !important;
       }
-      .sticker-filled {
-        background-color: #1e293b !important;
-        color: #fff !important;
-        border-color: #0f172a !important;
-        border-width: 2px !important;
+      #missing-list-container { display: none; }
+      body.print-mode-missing #missing-list-container { display: block !important; }
+
+      .missing-list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #cbd5e1;
+        padding-bottom: 4px;
       }
-      .country-row {
-        padding: 0.05rem !important;
-        border-bottom: 1px solid #94a3b8 !important;
+      .missing-list-header-left {
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
-      .flag-img {
-        width: 10px !important;
+      .missing-list-header .logo { height: 18px; margin: 0; }
+      .missing-list-header .title { font-size: 11px; font-weight: bold; margin: 0; }
+      .missing-list-header .stats { font-size: 9px; color: #475569; margin: 0; }
+      
+      .missing-group-card {
+        break-inside: avoid;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 4px;
+        position: relative;
+      }
+      .missing-group-watermark {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 64px;
+        font-weight: 900;
+        color: rgba(148, 163, 184, 0.12);
+        user-select: none;
+        pointer-events: none;
+        z-index: 0;
+        line-height: 1;
+      }
+      .missing-group-content {
+        padding: 4px 8px;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .missing-country-block {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 3px;
+        position: relative;
+        z-index: 1;
+      }
+      .missing-country-header {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 9px;
+        font-weight: bold;
+        min-width: 90px;
+        flex-shrink: 0;
+      }
+      .missing-country-header .flag-img { border-radius: 1px; width: 16px; height: 12px; }
+
+      .missing-list-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        padding-left: 0;
+      }
+      .special-list-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        padding-left: 0;
+      }
+      .missing-sticker-box {
+        border: 1px solid #64748b;
+        border-radius: 3px;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        font-weight: bold;
+        font-family: monospace;
+        background-color: #f8fafc;
+        color: #1e293b;
       }
     }
   </style>
@@ -79,6 +172,10 @@
         <button onclick="saveFile()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
           <span class="hidden md:inline">Guardar</span>
+        </button>
+        <button onclick="exportMissing()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <span class="hidden md:inline">Faltantes</span>
         </button>
         <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -112,6 +209,8 @@
     <div id="album" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 print-grid"></div>
   </main>
 
+  <div id="missing-list-container"></div>
+
   <div id="reset-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center print-hide">
     <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 m-4 transform transition-all scale-95 opacity-0" id="reset-modal-content">
       <h3 class="text-lg font-bold text-slate-900 mb-2">¿Reiniciar colección?</h3>
@@ -123,7 +222,7 @@
     </div>
   </div>
 
-<script>
+  <script>
     const STORAGE_KEY = 'panini2026_stickers_v2';
     const DATA_FILE = 'panini-2026-data.json';
     let fileHandle = null;
@@ -141,6 +240,14 @@
       'J': 'from-orange-600 to-orange-700',
       'K': 'from-slate-500 to-slate-600',
       'L': 'from-stone-500 to-stone-600'
+    };
+
+    const PRINT_COLORS = {
+      'A': '#ef4444', 'B': '#60a5fa', 'C': '#22c55e', 'D': '#a855f7',
+      'E': '#fb923c', 'F': '#2dd4bf', 'G': '#ec4899', 'H': '#06b6d4',
+      'I': '#84cc16', 'J': '#ea580c', 'K': '#64748b', 'L': '#78716c',
+      'FWC': 'linear-gradient(to right, #003399, #1e40af)',
+      'CC': 'linear-gradient(to right, #D6001C, #991b1b)'
     };
 
     const groups = [
@@ -167,24 +274,93 @@
 
     const TOTAL_STICKERS = 993;
 
-    async function loadData() {
+    // IndexedDB helper to store file handle
+    const DB_NAME = 'panini_tracker_db';
+    const STORE_NAME = 'file_handles';
+    const HANDLE_KEY = 'current_file_handle';
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          e.target.result.createObjectStore(STORE_NAME);
+        };
+        request.onsuccess = (e) => resolve(e.target.result);
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    async function storeFileHandle(handle) {
       try {
-        if ('showOpenFilePicker' in window) {
-          [fileHandle] = await window.showOpenFilePicker({
-            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
-          });
-          const file = await fileHandle.getFile();
-          const text = await file.text();
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).put(handle, HANDLE_KEY);
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch (e) {
+        console.warn('Failed to store file handle in IndexedDB:', e);
+      }
+    }
+
+    async function getStoredFileHandle() {
+      try {
+        const db = await openDB();
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const request = tx.objectStore(STORE_NAME).get(HANDLE_KEY);
+        return await new Promise((resolve, reject) => {
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      } catch (e) {
+        console.warn('Failed to retrieve file handle from IndexedDB:', e);
+        return null;
+      }
+    }
+
+    async function loadData() {
+      // 1. Try to fetch from relative path (same directory as HTML)
+      try {
+        const response = await fetch(DATA_FILE);
+        if (response.ok) {
+          const text = await response.text();
           stickers = JSON.parse(text);
           localStorage.setItem(STORAGE_KEY, text);
+          console.log('Data loaded successfully from ' + DATA_FILE);
           return;
         }
       } catch (e) {
-        if (e.name !== 'AbortError') console.warn('File load failed:', e);
+        console.warn('Could not fetch ' + DATA_FILE + ', trying IndexedDB/localStorage:', e);
       }
+
+      // 2. Try to get handle from IndexedDB
+      try {
+        const storedHandle = await getStoredFileHandle();
+        if (storedHandle) {
+          if (await storedHandle.queryPermission({ mode: 'readwrite' }) === 'granted') {
+            fileHandle = storedHandle;
+            const file = await fileHandle.getFile();
+            const text = await file.text();
+            stickers = JSON.parse(text);
+            localStorage.setItem(STORAGE_KEY, text);
+            console.log('Data loaded from IndexedDB stored file handle');
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('IndexedDB handle load failed:', e);
+      }
+
+      // 3. Fallback to localStorage
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        stickers = JSON.parse(saved);
+        try {
+          stickers = JSON.parse(saved);
+        } catch (e) {
+          console.error('Error parsing localStorage:', e);
+          resetData(false);
+        }
       } else {
         resetData(false);
       }
@@ -206,10 +382,12 @@
     async function saveDataAs() {
       try {
         if ('showSaveFilePicker' in window) {
-          fileHandle = await window.showSaveFilePicker({
+          const handle = await window.showSaveFilePicker({
             suggestedName: DATA_FILE,
             types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
           });
+          fileHandle = handle;
+          await storeFileHandle(fileHandle);
           await saveData();
         }
       } catch (e) {
@@ -220,9 +398,11 @@
     async function openFile() {
       try {
         if ('showOpenFilePicker' in window) {
-          [fileHandle] = await window.showOpenFilePicker({
+          const [handle] = await window.showOpenFilePicker({
             types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
           });
+          fileHandle = handle;
+          await storeFileHandle(fileHandle);
           const file = await fileHandle.getFile();
           const text = await file.text();
           stickers = JSON.parse(text);
@@ -235,6 +415,31 @@
     }
 
     async function saveFile() {
+      if (!fileHandle) {
+        try {
+          const storedHandle = await getStoredFileHandle();
+          if (storedHandle) {
+            if (await storedHandle.requestPermission({ mode: 'readwrite' }) === 'granted') {
+              fileHandle = storedHandle;
+            }
+          }
+        } catch (e) {
+          console.warn('Could not restore file handle from IndexedDB:', e);
+        }
+      }
+
+      if (fileHandle) {
+        try {
+          if (await fileHandle.queryPermission({ mode: 'readwrite' }) !== 'granted') {
+            if (await fileHandle.requestPermission({ mode: 'readwrite' }) !== 'granted') {
+              fileHandle = null;
+            }
+          }
+        } catch (e) {
+          fileHandle = null;
+        }
+      }
+
       if (fileHandle) {
         await saveData();
       } else {
@@ -401,6 +606,114 @@
     function confirmReset() {
       resetData();
       hideResetModal();
+    }
+
+    function exportMissing() {
+      const missingContainer = document.getElementById('missing-list-container');
+      if (!missingContainer) return;
+
+      const allMissing = Object.keys(stickers).filter(id => !stickers[id]);
+      if (allMissing.length === 0) {
+        alert('¡Felicidades! No te falta ningún sticker.');
+        return;
+      }
+
+      let html = `
+        <div class="missing-list-header">
+          <div class="missing-list-header-left">
+            <img src="img/World-Cup-2026-Logo.png" alt="FIFA 2026" class="logo">
+            <h1 class="title">Stickers Faltantes - Panini 2026</h1>
+          </div>
+          <p class="stats">Total Faltantes: <strong>${allMissing.length}</strong> de ${TOTAL_STICKERS}</p>
+        </div>
+      `;
+
+      // Process regular groups
+      groups.forEach(group => {
+        let groupHtml = '';
+        let totalMissingInGroup = 0;
+
+        group.countries.forEach(country => {
+          const missingInCountry = [];
+          for (let i = 1; i <= 20; i++) {
+            const id = `${country.code}${i}`;
+            if (!stickers[id]) missingInCountry.push(id);
+          }
+
+          if (missingInCountry.length > 0) {
+            totalMissingInGroup += missingInCountry.length;
+            groupHtml += `<div class="missing-country-block">
+              <div class="missing-country-header">
+                <img src="https://flagcdn.com/24x18/${country.flag}.png" class="flag-img" alt="${country.name}">
+                <span>${country.name}</span>
+              </div>
+              <div class="missing-list-grid">`;
+            missingInCountry.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
+              const num = id.replace(country.code, '');
+              groupHtml += `<div class="missing-sticker-box">${num}</div>`;
+            });
+            groupHtml += `</div></div>`;
+          }
+        });
+
+        if (totalMissingInGroup > 0) {
+          html += `<div class="missing-group-card">
+            <div class="missing-group-watermark">${group.name}</div>
+            <div class="missing-group-content">${groupHtml}</div>
+          </div>`;
+        }
+      });
+
+      // Process special groups
+      specialGroups.forEach(sg => {
+        const missingInGroup = [];
+        for (let i = 1; i <= sg.count; i++) {
+          const id = `${sg.code}${i}`;
+          if (!stickers[id]) missingInGroup.push(id);
+        }
+
+        if (missingInGroup.length > 0) {
+          html += `<div class="missing-group-card">
+            <div class="missing-group-watermark">${sg.code}</div>
+            <div class="missing-group-content">
+              <div class="missing-list-grid special-list-grid">`;
+          missingInGroup.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
+            const num = id.replace(sg.code, '');
+            html += `<div class="missing-sticker-box">${num}</div>`;
+          });
+          html += `</div></div></div>`;
+        }
+      });
+
+      missingContainer.innerHTML = html;
+
+      // Wait for all dynamically added images to load before printing
+      const imgs = missingContainer.querySelectorAll('img');
+      const promises = Array.from(imgs).map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      });
+
+      Promise.all(promises).then(() => {
+        document.body.classList.add('print-mode-missing');
+        window.print();
+
+        if (window.onafterprint !== undefined) {
+          window.onafterprint = () => {
+            document.body.classList.remove('print-mode-missing');
+            missingContainer.innerHTML = '';
+            window.onafterprint = null;
+          };
+        } else {
+          setTimeout(() => {
+            document.body.classList.remove('print-mode-missing');
+            missingContainer.innerHTML = '';
+          }, 1000);
+        }
+      });
     }
 
     init();
