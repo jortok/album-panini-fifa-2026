@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Álbum Panini 2026 - Sticker Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @page {
+      size: letter portrait;
+      margin: 0.15in;
+    }
+    @media print {
+      body {
+        background-color: white !important;
+        font-size: 8px !important;
+      }
+      .print-hide {
+        display: none !important;
+      }
+      .print-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 0.1rem !important;
+      }
+      .print-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #94a3b8 !important;
+        margin-bottom: 0 !important;
+      }
+      .print-card > div:first-child {
+        padding: 2px !important;
+      }
+      .print-card h3 {
+        font-size: 8px !important;
+      }
+      .sticker-btn {
+        border-width: 1px !important;
+        height: auto !important;
+        padding: 0 !important;
+        font-size: 5px !important;
+        aspect-ratio: auto !important;
+        min-height: 10px;
+      }
+      .sticker-filled {
+        background-color: #1e293b !important;
+        color: #fff !important;
+        border-color: #0f172a !important;
+        border-width: 2px !important;
+      }
+      .country-row {
+        padding: 0.05rem !important;
+        border-bottom: 1px solid #94a3b8 !important;
+      }
+      .flag-img {
+        width: 10px !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <header class="bg-[#003399] text-white shadow-md sticky top-0 z-20 print-hide">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="img/World-Cup-2026-Logo.png" alt="FIFA 2026" class="h-8">
+        <h1 class="text-lg md:text-xl font-bold tracking-wide">Panini Copa Mundial 2026</h1>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="showResetModal()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden md:inline">Reiniciar</span>
+        </button>
+        <button onclick="openFile()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <span class="hidden md:inline">Abrir</span>
+        </button>
+        <button onclick="saveFile()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span class="hidden md:inline">Guardar</span>
+        </button>
+        <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          <span class="hidden md:inline">Imprimir</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl mx-auto w-full p-2 md:p-4 print:p-0">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6 print-hide">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <h2 class="text-slate-500 font-semibold text-sm uppercase tracking-wider">Tu Progreso</h2>
+          <div class="text-3xl font-black text-[#003399]">
+            <span id="stat-owned">0</span> <span class="text-slate-400 text-xl font-medium">/ 993</span>
+          </div>
+        </div>
+        <div class="w-full md:w-2/3">
+          <div class="flex justify-between text-sm font-bold text-slate-700 mb-1">
+            <span>Completado</span>
+            <span id="stat-percent">0%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner border border-slate-200">
+            <div id="progress-fill" class="bg-gradient-to-r from-green-400 to-green-500 h-4 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="album" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 print-grid"></div>
+  </main>
+
+  <div id="reset-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center print-hide">
+    <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 m-4 transform transition-all scale-95 opacity-0" id="reset-modal-content">
+      <h3 class="text-lg font-bold text-slate-900 mb-2">¿Reiniciar colección?</h3>
+      <p class="text-slate-500 text-sm mb-6">Esta acción borrará todo tu progreso. No podrás recuperarlo después. ¿Estás seguro?</p>
+      <div class="flex justify-end gap-3">
+        <button onclick="hideResetModal()" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">Cancelar</button>
+        <button onclick="confirmReset()" class="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm">Sí, borrar todo</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+    const STORAGE_KEY = 'panini2026_stickers_v2';
+    const DATA_FILE = 'panini-2026-data.json';
+    let fileHandle = null;
+
+    const GROUP_COLORS = {
+      'A': 'from-red-500 to-red-600',
+      'B': 'from-blue-400 to-blue-500',
+      'C': 'from-green-500 to-green-600',
+      'D': 'from-purple-500 to-purple-600',
+      'E': 'from-orange-400 to-orange-500',
+      'F': 'from-teal-400 to-teal-500',
+      'G': 'from-pink-500 to-pink-600',
+      'H': 'from-cyan-500 to-cyan-600',
+      'I': 'from-lime-500 to-lime-600',
+      'J': 'from-orange-600 to-orange-700',
+      'K': 'from-slate-500 to-slate-600',
+      'L': 'from-stone-500 to-stone-600'
+    };
+
+    const groups = [
+      { name: 'A', countries: [{ code: 'MEX', name: 'México', flag: 'mx' }, { code: 'RSA', name: 'Sudáfica', flag: 'za' }, { code: 'KOR', name: 'Corea Sur', flag: 'kr' }, { code: 'CZE', name: 'Rep. Checa', flag: 'cz' }] },
+      { name: 'B', countries: [{ code: 'CAN', name: 'Canadá', flag: 'ca' }, { code: 'BIH', name: 'Bosnia', flag: 'ba' }, { code: 'QAT', name: 'Catar', flag: 'qa' }, { code: 'SUI', name: 'Suiza', flag: 'ch' }] },
+      { name: 'C', countries: [{ code: 'BRA', name: 'Brasil', flag: 'br' }, { code: 'MAR', name: 'Marruecos', flag: 'ma' }, { code: 'HAI', name: 'Haití', flag: 'ht' }, { code: 'SCO', name: 'Escocia', flag: 'gb-sct' }] },
+      { name: 'D', countries: [{ code: 'USA', name: 'EEUU', flag: 'us' }, { code: 'PAR', name: 'Paraguay', flag: 'py' }, { code: 'AUS', name: 'Australia', flag: 'au' }, { code: 'TUR', name: 'Turquía', flag: 'tr' }] },
+      { name: 'E', countries: [{ code: 'GER', name: 'Alemania', flag: 'de' }, { code: 'CUR', name: 'Curazao', flag: 'cw' }, { code: 'CIV', name: 'C. Marfil', flag: 'ci' }, { code: 'ECU', name: 'Ecuador', flag: 'ec' }] },
+      { name: 'F', countries: [{ code: 'NED', name: 'P. Bajos', flag: 'nl' }, { code: 'JPN', name: 'Japón', flag: 'jp' }, { code: 'SWE', name: 'Suecia', flag: 'se' }, { code: 'TUN', name: 'Túnez', flag: 'tn' }] },
+      { name: 'G', countries: [{ code: 'BEL', name: 'Bélgica', flag: 'be' }, { code: 'EGY', name: 'Egipto', flag: 'eg' }, { code: 'IRN', name: 'Irán', flag: 'ir' }, { code: 'NZL', name: 'N. Zelanda', flag: 'nz' }] },
+      { name: 'H', countries: [{ code: 'ESP', name: 'España', flag: 'es' }, { code: 'CPV', name: 'Cabo Verde', flag: 'cv' }, { code: 'KSA', name: 'Arabia', flag: 'sa' }, { code: 'URU', name: 'Uruguay', flag: 'uy' }] },
+      { name: 'I', countries: [{ code: 'FRA', name: 'Francia', flag: 'fr' }, { code: 'SEN', name: 'Senegal', flag: 'sn' }, { code: 'IRQ', name: 'Irak', flag: 'iq' }, { code: 'NOR', name: 'Noruega', flag: 'no' }] },
+      { name: 'J', countries: [{ code: 'ARG', name: 'Argentina', flag: 'ar' }, { code: 'ALG', name: 'Argelia', flag: 'dz' }, { code: 'AUT', name: 'Austria', flag: 'at' }, { code: 'JOR', name: 'Jordania', flag: 'jo' }] },
+      { name: 'K', countries: [{ code: 'POR', name: 'Portugal', flag: 'pt' }, { code: 'COD', name: 'R.D. Congo', flag: 'cd' }, { code: 'UZB', name: 'Uzbekist.', flag: 'uz' }, { code: 'COL', name: 'Colombia', flag: 'co' }] },
+      { name: 'L', countries: [{ code: 'ENG', name: 'Inglaterra', flag: 'gb-eng' }, { code: 'CRO', name: 'Croacia', flag: 'hr' }, { code: 'GHA', name: 'Ghana', flag: 'gh' }, { code: 'PAN', name: 'Panamá', flag: 'pa' }] }
+    ];
+
+    const specialGroups = [
+      { name: 'FWC', code: 'FWC', nameFull: 'Fifa World Cup', count: 19, gradient: 'from-[#003399] to-blue-800' },
+      { name: 'CC', code: 'CC', nameFull: 'Coca-Cola', count: 14, gradient: 'from-[#D6001C] to-red-800' }
+    ];
+
+    let stickers = {};
+
+    const TOTAL_STICKERS = 993;
+
+    async function loadData() {
+      try {
+        if ('showOpenFilePicker' in window) {
+          [fileHandle] = await window.showOpenFilePicker({
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+          });
+          const file = await fileHandle.getFile();
+          const text = await file.text();
+          stickers = JSON.parse(text);
+          localStorage.setItem(STORAGE_KEY, text);
+          return;
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') console.warn('File load failed:', e);
+      }
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        stickers = JSON.parse(saved);
+      } else {
+        resetData(false);
+      }
+    }
+
+    async function saveData() {
+      try {
+        if (fileHandle) {
+          const writable = await fileHandle.createWritable();
+          await writable.write(JSON.stringify(stickers));
+          await writable.close();
+        }
+      } catch (e) {
+        console.warn('Auto-save to file failed, saving to localStorage');
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stickers));
+    }
+
+    async function saveDataAs() {
+      try {
+        if ('showSaveFilePicker' in window) {
+          fileHandle = await window.showSaveFilePicker({
+            suggestedName: DATA_FILE,
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+          });
+          await saveData();
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') alert('No se pudo guardar el archivo');
+      }
+    }
+
+    async function openFile() {
+      try {
+        if ('showOpenFilePicker' in window) {
+          [fileHandle] = await window.showOpenFilePicker({
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+          });
+          const file = await fileHandle.getFile();
+          const text = await file.text();
+          stickers = JSON.parse(text);
+          localStorage.setItem(STORAGE_KEY, text);
+          render();
+        }
+      } catch (e) {
+        if (e.name !== 'AbortError') alert('No se pudo abrir el archivo');
+      }
+    }
+
+    async function saveFile() {
+      if (fileHandle) {
+        await saveData();
+      } else {
+        await saveDataAs();
+      }
+    }
+
+    function init() {
+      loadData().then(render);
+    }
+
+    function resetData(shouldRender = true) {
+      stickers = {};
+      groups.forEach(g => g.countries.forEach(c => {
+        for (let i = 1; i <= 20; i++) stickers[`${c.code}${i}`] = false;
+      }));
+      specialGroups.forEach(sg => {
+        for (let i = 1; i <= sg.count; i++) stickers[`${sg.code}${i}`] = false;
+      });
+      saveData();
+      if(shouldRender) render();
+    }
+
+    function save() {
+      saveData();
+    }
+
+    function toggle(id, sectionId) {
+      stickers[id] = !stickers[id];
+      saveData();
+      
+      const btn = document.getElementById(`btn-${id}`);
+      if (btn) {
+        if (stickers[id]) {
+          btn.classList.add('bg-blue-600', 'text-white', 'border-blue-700', 'sticker-filled');
+          btn.classList.remove('bg-slate-50', 'text-slate-500', 'border-slate-200');
+        } else {
+          btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-700', 'sticker-filled');
+          btn.classList.add('bg-slate-50', 'text-slate-500', 'border-slate-200');
+        }
+      }
+      
+      updateCounter(sectionId);
+      updateStats();
+    }
+
+    function updateCounter(sectionId) {
+      let total = 0, count = 0;
+      
+      if (sectionId.startsWith('sp-')) {
+        const spCode = sectionId.split('-')[1];
+        const sg = specialGroups.find(s => s.code === spCode);
+        total = sg.count;
+        for(let i=1; i<=total; i++) if(stickers[`${spCode}${i}`]) count++;
+      } else {
+        total = 20;
+        for(let i=1; i<=total; i++) if(stickers[`${sectionId}${i}`]) count++;
+      }
+      
+      const el = document.getElementById(`count-${sectionId}`);
+      if(el) el.textContent = `${count}/${total}`;
+    }
+
+    function updateStats() {
+      const owned = Object.values(stickers).filter(Boolean).length;
+      const percent = Math.round((owned / TOTAL_STICKERS) * 100);
+      
+      document.getElementById('stat-owned').textContent = owned;
+      document.getElementById('stat-percent').textContent = percent + '%';
+      document.getElementById('progress-fill').style.width = percent + '%';
+    }
+
+    function render() {
+      const container = document.getElementById('album');
+      let html = '';
+
+      groups.forEach(group => {
+        html += `
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print-card">
+            <div class="bg-gradient-to-r ${GROUP_COLORS[group.name]} text-white p-2 md:p-3 flex justify-between items-center print:bg-none print:text-black print:border-b print:border-slate-300">
+              <h3 class="font-black text-lg print:text-xs">GRUPO ${group.name}</h3>
+            </div>
+            <div class="divide-y divide-slate-100">
+        `;
+        
+        group.countries.forEach(country => {
+          html += `
+            <div class="p-3 country-row">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <img src="https://flagcdn.com/24x18/${country.flag}.png" alt="${country.name}" class="w-6 h-auto rounded-sm shadow-sm flag-img">
+                  <span class="font-bold text-slate-800 print:text-[8px]">${country.name}</span>
+                  <span class="text-xs font-mono bg-slate-100 text-slate-500 px-1 rounded print:hidden">${country.code}</span>
+                </div>
+                <span id="count-${country.code}" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full print-hide">0/20</span>
+              </div>
+              <div class="grid grid-cols-10 gap-1 mt-2 print:grid-cols-10">
+          `;
+          
+          for (let i = 1; i <= 20; i++) {
+            const id = `${country.code}${i}`;
+            const filled = stickers[id];
+            const cls = filled 
+              ? 'bg-blue-600 text-white border-blue-700 sticker-filled' 
+              : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100';
+              
+            html += `<button id="btn-${id}" onclick="toggle('${id}', '${country.code}')" class="sticker-btn border rounded aspect-square flex items-center justify-center text-[10px] sm:text-xs font-semibold transition-colors ${cls}" title="${id}">${i}</button>`;
+          }
+          
+          html += `</div></div>`;
+        });
+        
+        html += `</div></div>`;
+      });
+
+      specialGroups.forEach(sg => {
+        html += `
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print-card">
+            <div class="bg-gradient-to-r ${sg.gradient} text-white p-2 md:p-3 flex justify-between items-center print:bg-none print:text-black print:border-b print:border-slate-300">
+              <h3 class="font-black text-sm md:text-base print:text-xs uppercase">${sg.nameFull}</h3>
+              <span id="count-sp-${sg.code}" class="text-xs font-bold bg-white/20 px-2 py-0.5 rounded-full print-hide">0/${sg.count}</span>
+            </div>
+            <div class="p-3 country-row">
+              <div class="grid grid-cols-10 gap-1 print:grid-cols-10">
+        `;
+        
+        for (let i = 1; i <= sg.count; i++) {
+          const id = `${sg.code}${i}`;
+          const filled = stickers[id];
+          const cls = filled 
+            ? 'bg-blue-600 text-white border-blue-700 sticker-filled' 
+            : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100';
+            
+          html += `<button id="btn-${id}" onclick="toggle('${id}', 'sp-${sg.code}')" class="sticker-btn border rounded aspect-square flex items-center justify-center text-[10px] sm:text-xs font-semibold transition-colors ${cls}" title="${id}">${i}</button>`;
+        }
+        
+        html += `</div></div></div>`;
+      });
+
+      container.innerHTML = html;
+
+      groups.forEach(g => g.countries.forEach(c => updateCounter(c.code)));
+      specialGroups.forEach(sg => updateCounter(`sp-${sg.code}`));
+      updateStats();
+    }
+
+    const modal = document.getElementById('reset-modal');
+    const modalContent = document.getElementById('reset-modal-content');
+
+    function showResetModal() {
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function hideResetModal() {
+      modalContent.classList.remove('scale-100', 'opacity-100');
+      modalContent.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function confirmReset() {
+      resetData();
+      hideResetModal();
+    }
+
+    init();
+  </script>
+</body>
+</html>
