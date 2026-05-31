@@ -1,0 +1,123 @@
+@page {
+  size: letter portrait;
+  margin: 12.7mm;
+}
+#missing-list-container {
+  display: none;
+}
+@media print {
+  /* Hide interactive elements and display missing list only */
+  body {
+    background-color: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: sans-serif;
+  }
+  header, main, #reset-modal, .print-hide {
+    display: none !important;
+  }
+  #missing-list-container {
+    display: block !important;
+    padding: 0;
+  }
+
+  .missing-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 4px;
+  }
+  .missing-list-header-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .missing-list-header .logo { height: 14px; margin: 0; }
+  .missing-list-header .title { font-size: 10px; font-weight: bold; margin: 0; }
+  .missing-list-header .stats { font-size: 8px; color: #475569; margin: 0; }
+  
+  .missing-groups-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .missing-group-card {
+    break-inside: avoid;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    background-color: #fff;
+  }
+  .missing-group-watermark {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 48px;
+    font-weight: 900;
+    color: rgba(148, 163, 184, 0.12);
+    user-select: none;
+    pointer-events: none;
+    z-index: 0;
+    line-height: 1;
+  }
+  .missing-group-content {
+    padding: 2px 4px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .missing-country-block {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 1.5px;
+    position: relative;
+    z-index: 1;
+  }
+  .missing-country-block:last-child {
+    margin-bottom: 0;
+  }
+  .missing-country-header {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 8px;
+    font-weight: bold;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+  .missing-country-header .flag-img { border-radius: 1px; width: 12px; height: 9px; }
+
+  .missing-list-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding-left: 0;
+  }
+  .special-list-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding-left: 0;
+  }
+  .missing-sticker-box {
+    border: 1px solid #64748b;
+    border-radius: 2px;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7.5px;
+    font-weight: bold;
+    font-family: monospace;
+    background-color: #f8fafc;
+    color: #1e293b;
+  }
+}
