@@ -14,83 +14,58 @@
       display: none;
     }
     @media print {
-      /* --- Global Print Styles --- */
+      /* Hide interactive elements and display missing list only */
       body {
         background-color: white !important;
-        font-size: 8px !important;
+        color: black !important;
         margin: 0 !important;
         padding: 0 !important;
+        font-family: sans-serif;
       }
-
-      /* --- Default Print Mode (Full Album) --- */
-      body:not(.print-mode-missing) .print-hide,
-      body:not(.print-mode-missing) #missing-list-container {
+      header, main, #reset-modal, .print-hide {
         display: none !important;
       }
-      body:not(.print-mode-missing) .print-grid {
-        display: grid !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 0.1rem !important;
+      #missing-list-container {
+        display: block !important;
+        padding: 4px;
       }
-      body:not(.print-mode-missing) .print-card {
-        break-inside: avoid;
-        box-shadow: none !important;
-        border: 1px solid #94a3b8 !important;
-        margin-bottom: 0 !important;
-      }
-      body:not(.print-mode-missing) .print-card > div:first-child { padding: 2px !important; }
-      body:not(.print-mode-missing) .print-card h3 { font-size: 8px !important; }
-      body:not(.print-mode-missing) .sticker-btn {
-        border-width: 1px !important; height: auto !important; padding: 0 !important;
-        font-size: 5px !important; aspect-ratio: auto !important; min-height: 10px;
-      }
-      body:not(.print-mode-missing) .sticker-filled {
-        background-color: #1e293b !important; color: #fff !important;
-        border-color: #0f172a !important; border-width: 2px !important;
-      }
-      body:not(.print-mode-missing) .country-row { padding: 0.05rem !important; border-bottom: 1px solid #94a3b8 !important; }
-      body:not(.print-mode-missing) .flag-img { width: 10px !important; }
-
-      /* --- Missing List Print Mode --- */
-      body.print-mode-missing header,
-      body.print-mode-missing main,
-      body.print-mode-missing #reset-modal {
-        display: none !important;
-      }
-      #missing-list-container { display: none; }
-      body.print-mode-missing #missing-list-container { display: block !important; }
 
       .missing-list-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         border-bottom: 1px solid #cbd5e1;
-        padding-bottom: 4px;
+        padding-bottom: 2px;
       }
       .missing-list-header-left {
         display: flex;
         align-items: center;
         gap: 6px;
       }
-      .missing-list-header .logo { height: 18px; margin: 0; }
-      .missing-list-header .title { font-size: 11px; font-weight: bold; margin: 0; }
-      .missing-list-header .stats { font-size: 9px; color: #475569; margin: 0; }
+      .missing-list-header .logo { height: 14px; margin: 0; }
+      .missing-list-header .title { font-size: 10px; font-weight: bold; margin: 0; }
+      .missing-list-header .stats { font-size: 8px; color: #475569; margin: 0; }
       
+      .missing-groups-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
       .missing-group-card {
         break-inside: avoid;
         border: 1px solid #cbd5e1;
-        border-radius: 6px;
+        border-radius: 4px;
         overflow: hidden;
-        margin-bottom: 4px;
         position: relative;
       }
       .missing-group-watermark {
         position: absolute;
-        right: 8px;
+        right: 4px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 64px;
+        font-size: 48px;
         font-weight: 900;
         color: rgba(148, 163, 184, 0.12);
         user-select: none;
@@ -99,7 +74,7 @@
         line-height: 1;
       }
       .missing-group-content {
-        padding: 4px 8px;
+        padding: 2px 4px;
         position: relative;
         z-index: 1;
       }
@@ -107,43 +82,46 @@
       .missing-country-block {
         display: flex;
         align-items: center;
-        gap: 8px;
-        margin-bottom: 3px;
+        gap: 4px;
+        margin-bottom: 1.5px;
         position: relative;
         z-index: 1;
+      }
+      .missing-country-block:last-child {
+        margin-bottom: 0;
       }
       .missing-country-header {
         display: flex;
         align-items: center;
-        gap: 4px;
-        font-size: 9px;
+        gap: 3px;
+        font-size: 8px;
         font-weight: bold;
-        min-width: 90px;
+        min-width: 80px;
         flex-shrink: 0;
       }
-      .missing-country-header .flag-img { border-radius: 1px; width: 16px; height: 12px; }
+      .missing-country-header .flag-img { border-radius: 1px; width: 12px; height: 9px; }
 
       .missing-list-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 3px;
+        gap: 2px;
         padding-left: 0;
       }
       .special-list-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 3px;
+        gap: 2px;
         padding-left: 0;
       }
       .missing-sticker-box {
         border: 1px solid #64748b;
-        border-radius: 3px;
-        width: 18px;
-        height: 18px;
+        border-radius: 2px;
+        width: 14px;
+        height: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 9px;
+        font-size: 7.5px;
         font-weight: bold;
         font-family: monospace;
         background-color: #f8fafc;
@@ -173,13 +151,9 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
           <span class="hidden md:inline">Guardar</span>
         </button>
-        <button onclick="exportMissing()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          <span class="hidden md:inline">Faltantes</span>
-        </button>
-        <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-          <span class="hidden md:inline">Imprimir</span>
+          <span class="hidden md:inline">Imprimir Faltantes</span>
         </button>
       </div>
     </div>
@@ -320,21 +294,31 @@
     }
 
     async function loadData() {
-      // 1. Try to fetch from relative path (same directory as HTML)
+      // 1. Try to load from localStorage first
+      let localStickers = null;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          localStickers = JSON.parse(saved);
+        } catch (e) {
+          console.error('Error parsing localStorage:', e);
+        }
+      }
+
+      // 2. Try to fetch from relative path (same directory as HTML)
+      let fetchedStickers = null;
       try {
         const response = await fetch(DATA_FILE);
         if (response.ok) {
           const text = await response.text();
-          stickers = JSON.parse(text);
-          localStorage.setItem(STORAGE_KEY, text);
-          console.log('Data loaded successfully from ' + DATA_FILE);
-          return;
+          fetchedStickers = JSON.parse(text);
         }
       } catch (e) {
         console.warn('Could not fetch ' + DATA_FILE + ', trying IndexedDB/localStorage:', e);
       }
 
-      // 2. Try to get handle from IndexedDB
+      // 3. Try to get handle from IndexedDB
+      let indexedStickers = null;
       try {
         const storedHandle = await getStoredFileHandle();
         if (storedHandle) {
@@ -342,25 +326,31 @@
             fileHandle = storedHandle;
             const file = await fileHandle.getFile();
             const text = await file.text();
-            stickers = JSON.parse(text);
-            localStorage.setItem(STORAGE_KEY, text);
-            console.log('Data loaded from IndexedDB stored file handle');
-            return;
+            indexedStickers = JSON.parse(text);
           }
         }
       } catch (e) {
         console.warn('IndexedDB handle load failed:', e);
       }
 
-      // 3. Fallback to localStorage
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          stickers = JSON.parse(saved);
-        } catch (e) {
-          console.error('Error parsing localStorage:', e);
-          resetData(false);
-        }
+      // 4. Resolve conflicts using timestamps (or size if timestamps are missing/equal)
+      const candidates = [localStickers, fetchedStickers, indexedStickers].filter(Boolean);
+
+      if (candidates.length > 0) {
+        candidates.sort((a, b) => {
+          const aTime = a.lastUpdated || 0;
+          const bTime = b.lastUpdated || 0;
+          if (aTime !== bTime) {
+            return bTime - aTime; // descending (newest first)
+          }
+          // fallback to counting owned stickers (true values)
+          const aCount = Object.values(a).filter(v => v === true).length;
+          const bCount = Object.values(b).filter(v => v === true).length;
+          return bCount - aCount;
+        });
+
+        stickers = candidates[0];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stickers));
       } else {
         resetData(false);
       }
@@ -406,7 +396,10 @@
           const file = await fileHandle.getFile();
           const text = await file.text();
           stickers = JSON.parse(text);
-          localStorage.setItem(STORAGE_KEY, text);
+          if (!stickers.lastUpdated) {
+            stickers.lastUpdated = Date.now();
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(stickers));
           render();
         }
       } catch (e) {
@@ -459,6 +452,7 @@
       specialGroups.forEach(sg => {
         for (let i = 1; i <= sg.count; i++) stickers[`${sg.code}${i}`] = false;
       });
+      stickers.lastUpdated = Date.now();
       saveData();
       if(shouldRender) render();
     }
@@ -469,6 +463,7 @@
 
     function toggle(id, sectionId) {
       stickers[id] = !stickers[id];
+      stickers.lastUpdated = Date.now();
       saveData();
       
       const btn = document.getElementById(`btn-${id}`);
@@ -584,6 +579,7 @@
       groups.forEach(g => g.countries.forEach(c => updateCounter(c.code)));
       specialGroups.forEach(sg => updateCounter(`sp-${sg.code}`));
       updateStats();
+      updateMissingList();
     }
 
     const modal = document.getElementById('reset-modal');
@@ -608,13 +604,21 @@
       hideResetModal();
     }
 
-    function exportMissing() {
+    function updateMissingList() {
       const missingContainer = document.getElementById('missing-list-container');
       if (!missingContainer) return;
 
-      const allMissing = Object.keys(stickers).filter(id => !stickers[id]);
+      const allMissing = Object.keys(stickers).filter(id => id !== 'lastUpdated' && !stickers[id]);
       if (allMissing.length === 0) {
-        alert('¡Felicidades! No te falta ningún sticker.');
+        missingContainer.innerHTML = `
+          <div class="missing-list-header">
+            <div class="missing-list-header-left">
+              <img src="img/World-Cup-2026-Logo.png" alt="FIFA 2026" class="logo">
+              <h1 class="title">Stickers Faltantes - Panini 2026</h1>
+            </div>
+            <p class="stats">¡Felicidades! No te falta ningún sticker.</p>
+          </div>
+        `;
         return;
       }
 
@@ -626,6 +630,7 @@
           </div>
           <p class="stats">Total Faltantes: <strong>${allMissing.length}</strong> de ${TOTAL_STICKERS}</p>
         </div>
+        <div class="missing-groups-grid">
       `;
 
       // Process regular groups
@@ -685,35 +690,8 @@
         }
       });
 
+      html += `</div>`;
       missingContainer.innerHTML = html;
-
-      // Wait for all dynamically added images to load before printing
-      const imgs = missingContainer.querySelectorAll('img');
-      const promises = Array.from(imgs).map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise(resolve => {
-          img.onload = resolve;
-          img.onerror = resolve;
-        });
-      });
-
-      Promise.all(promises).then(() => {
-        document.body.classList.add('print-mode-missing');
-        window.print();
-
-        if (window.onafterprint !== undefined) {
-          window.onafterprint = () => {
-            document.body.classList.remove('print-mode-missing');
-            missingContainer.innerHTML = '';
-            window.onafterprint = null;
-          };
-        } else {
-          setTimeout(() => {
-            document.body.classList.remove('print-mode-missing');
-            missingContainer.innerHTML = '';
-          }, 1000);
-        }
-      });
     }
 
     init();
