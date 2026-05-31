@@ -1,0 +1,18 @@
+{
+  "name": "Panini Copa Mundial 2026 - Sticker Tracker",
+  "short_name": "Panini 2026",
+  "description": "Track your Panini 2026 World Cup sticker collection progress.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#003399",
+  "theme_color": "#003399",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "img/World-Cup-2026-Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
