@@ -49,6 +49,144 @@
 
     const TOTAL_STICKERS = 994;
 
+    let currentLanguage = 'EN';
+
+    const UI_TRANSLATIONS = {
+      'EN': {
+        'title': 'Panini World Cup 2026',
+        'btn-reset': 'Reset',
+        'btn-open': 'Open',
+        'btn-save': 'Save',
+        'btn-print': 'Print Missing',
+        'progress-title': 'Your Progress',
+        'progress-completed': 'Completed',
+        'modal-title': 'Reset Collection?',
+        'modal-text': 'This action will clear all your progress. You cannot undo this. Are you sure?',
+        'modal-cancel': 'Cancel',
+        'modal-confirm': 'Yes, clear all',
+        'stats-missing': 'Total Missing',
+        'stats-of': 'of',
+        'congrats': 'Congratulations! You have no missing stickers.',
+        'alert-no-save': 'Could not save file',
+        'alert-no-open': 'Could not open file',
+        'alert-reset': 'Reset collection?',
+      },
+      'ES': {
+        'title': 'Panini Copa Mundial 2026',
+        'btn-reset': 'Reiniciar',
+        'btn-open': 'Abrir',
+        'btn-save': 'Guardar',
+        'btn-print': 'Imprimir Faltantes',
+        'progress-title': 'Tu Progreso',
+        'progress-completed': 'Completado',
+        'modal-title': '¿Reiniciar colección?',
+        'modal-text': 'Esta acción borrará todo tu progreso. No podrás recuperarlo después. ¿Estás seguro?',
+        'modal-cancel': 'Cancelar',
+        'modal-confirm': 'Sí, borrar todo',
+        'stats-missing': 'Total Faltantes',
+        'stats-of': 'de',
+        'congrats': '¡Felicidades! No te falta ningún sticker.',
+        'alert-no-save': 'No se pudo guardar el archivo',
+        'alert-no-open': 'No se pudo abrir el archivo',
+        'alert-reset': '¿Reiniciar colección?',
+      }
+    };
+
+    const COUNTRY_TRANSLATIONS = {
+      'EN': {
+        'México': 'Mexico',
+        'Sudáfica': 'South Africa',
+        'Corea Sur': 'South Korea',
+        'Rep. Checa': 'Czech Republic',
+        'Canadá': 'Canada',
+        'Catar': 'Qatar',
+        'Suiza': 'Switzerland',
+        'Brasil': 'Brazil',
+        'Marruecos': 'Morocco',
+        'Haití': 'Haiti',
+        'Escocia': 'Scotland',
+        'EEUU': 'USA',
+        'Australia': 'Australia',
+        'Turquía': 'Turkey',
+        'Alemania': 'Germany',
+        'Curazao': 'Curaçao',
+        'C. Marfil': 'Ivory Coast',
+        'P. Bajos': 'Netherlands',
+        'Japón': 'Japan',
+        'Suecia': 'Sweden',
+        'Túnez': 'Tunisia',
+        'Bélgica': 'Belgium',
+        'Egipto': 'Egypt',
+        'Irán': 'Iran',
+        'N. Zelanda': 'New Zealand',
+        'España': 'Spain',
+        'Cabo Verde': 'Cape Verde',
+        'Arabia': 'Saudi Arabia',
+        'Uruguay': 'Uruguay',
+        'Francia': 'France',
+        'Irak': 'Iraq',
+        'Noruega': 'Norway',
+        'Argelia': 'Algeria',
+        'Jordania': 'Jordan',
+        'R.D. Congo': 'DR Congo',
+        'Uzbekist.': 'Uzbekistan',
+        'Inglaterra': 'England',
+        'Croacia': 'Croatia',
+        'Panamá': 'Panama'
+      }
+    };
+
+    function applyLanguage() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (UI_TRANSLATIONS[currentLanguage] && UI_TRANSLATIONS[currentLanguage][key]) {
+          el.textContent = UI_TRANSLATIONS[currentLanguage][key];
+        }
+      });
+    }
+
+    function toggleLangDropdown() {
+      const dropdown = document.getElementById('lang-dropdown');
+      if (dropdown) dropdown.classList.toggle('hidden');
+    }
+
+    function selectLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('panini_tracker_lang', lang);
+      document.getElementById('current-lang-label').textContent = lang;
+      applyLanguage();
+      render();
+      const dropdown = document.getElementById('lang-dropdown');
+      if (dropdown) dropdown.classList.add('hidden');
+    }
+
+    // Close the dropdown when clicking outside
+    window.addEventListener('click', function(e) {
+      const container = document.getElementById('lang-switcher-container');
+      const dropdown = document.getElementById('lang-dropdown');
+      if (container && !container.contains(e.target) && dropdown) {
+        dropdown.classList.add('hidden');
+      }
+    });
+
+    function getStickerName(id, lang) {
+      let name = STICKER_NAMES[id] || '';
+      if (lang === 'EN') {
+        if (name === 'Escudo') return 'Badge';
+        if (name === 'Foto del Equipo') return 'Team Photo';
+        if (name === 'Escudo Oficial 1') return 'Official Logo 1';
+        if (name === 'Escudo Oficial 2') return 'Official Logo 2';
+        if (name === 'Mascotas Oficiales') return 'Official Mascot';
+        if (name === 'Eslogan Oficial') return 'Official Slogan';
+        if (name === 'Balón Oficial') return 'Official Match Ball';
+        if (name.startsWith('Alemania Federal ')) return name.replace('Alemania Federal ', 'West Germany ');
+        if (name === 'Canadá') return 'Canada';
+        if (name === 'México') return 'Mexico';
+        if (name === 'EE. UU.') return 'USA';
+      }
+      return name;
+    }
+
     // IndexedDB helper to store file handle
     const DB_NAME = 'panini_tracker_db';
     const STORE_NAME = 'file_handles';
@@ -238,7 +376,7 @@
           await storeFileHandle(fileHandle);
           const saved = await saveData();
           if (saved) {
-            showToast('Progreso guardado en el archivo correctamente');
+            showToast(currentLanguage === 'EN' ? 'Progress saved to file successfully' : 'Progreso guardado en el archivo correctamente');
           }
         } else {
           // Fallback: download via anchor tag
@@ -251,11 +389,11 @@
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          showToast('Archivo de progreso descargado correctamente');
+          showToast(currentLanguage === 'EN' ? 'Progress file downloaded successfully' : 'Archivo de progreso descargado correctamente');
         }
       } catch (e) {
         if (e.name !== 'AbortError') {
-          showToast('No se pudo guardar el archivo', 'error');
+          showToast(UI_TRANSLATIONS[currentLanguage]['alert-no-save'], 'error');
         }
       }
     }
@@ -281,7 +419,7 @@
             console.warn('LocalStorage save failed:', se);
           }
           render();
-          showToast('Progreso cargado desde el archivo correctamente');
+          showToast(currentLanguage === 'EN' ? 'Progress loaded from file successfully' : 'Progreso cargado desde el archivo correctamente');
         } else {
           // Fallback for browsers that don't support showOpenFilePicker (like Firefox, Safari, mobile, or file://)
           const input = document.createElement('input');
@@ -303,16 +441,16 @@
                 console.warn('LocalStorage save failed:', se);
               }
               render();
-              showToast('Progreso cargado desde el archivo correctamente');
+              showToast(currentLanguage === 'EN' ? 'Progress loaded from file successfully' : 'Progreso cargado desde el archivo correctamente');
             } catch (err) {
-              showToast('Error al leer el archivo JSON: ' + err.message, 'error');
+              showToast((currentLanguage === 'EN' ? 'Error reading JSON file: ' : 'Error al leer el archivo JSON: ') + err.message, 'error');
             }
           };
           input.click();
         }
       } catch (e) {
         if (e.name !== 'AbortError') {
-          showToast('No se pudo abrir el archivo', 'error');
+          showToast(UI_TRANSLATIONS[currentLanguage]['alert-no-open'], 'error');
         }
       }
     }
@@ -348,7 +486,7 @@
       if (fileHandle) {
         savedToFile = await saveData();
         if (savedToFile) {
-          showToast('Progreso guardado en el archivo correctamente');
+          showToast(currentLanguage === 'EN' ? 'Progress saved to file successfully' : 'Progreso guardado en el archivo correctamente');
         } else {
           // If save failed even with handle, fallback to saveDataAs
           await saveDataAs();
@@ -359,6 +497,9 @@
     }
 
     function init() {
+      currentLanguage = localStorage.getItem('panini_tracker_lang') || 'EN';
+      document.getElementById('current-lang-label').textContent = currentLanguage;
+      applyLanguage();
       loadData().then(render);
     }
 
@@ -432,21 +573,25 @@
       let html = '';
 
       groups.forEach(group => {
+        const groupNameTrans = currentLanguage === 'EN' ? `GROUP ${group.name}` : `GRUPO ${group.name}`;
         html += `
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print-card">
             <div class="bg-gradient-to-r ${GROUP_COLORS[group.name]} text-white p-2 md:p-3 flex justify-between items-center print:bg-none print:text-black print:border-b print:border-slate-300">
-              <h3 class="font-black text-lg print:text-xs">GRUPO ${group.name}</h3>
+              <h3 class="font-black text-lg print:text-xs">${groupNameTrans}</h3>
             </div>
             <div class="divide-y divide-slate-100">
         `;
         
         group.countries.forEach(country => {
+          const countryNameTrans = COUNTRY_TRANSLATIONS[currentLanguage] && COUNTRY_TRANSLATIONS[currentLanguage][country.name]
+            ? COUNTRY_TRANSLATIONS[currentLanguage][country.name]
+            : country.name;
           html += `
             <div class="p-3 country-row">
               <div class="flex items-center justify-between mb-2">
                 <div class="flex items-center gap-2">
-                  <img src="https://flagcdn.com/24x18/${country.flag}.png" alt="${country.name}" class="w-6 h-auto rounded-sm shadow-sm flag-img">
-                  <span class="font-bold text-slate-800 print:text-[8px]">${country.name}</span>
+                  <img src="https://flagcdn.com/24x18/${country.flag}.png" alt="${countryNameTrans}" class="w-6 h-auto rounded-sm shadow-sm flag-img">
+                  <span class="font-bold text-slate-800 print:text-[8px]">${countryNameTrans}</span>
                   <span class="text-xs font-mono bg-slate-100 text-slate-500 px-1 rounded print:hidden">${country.code}</span>
                 </div>
                 <span id="count-${country.code}" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full print-hide">0/20</span>
@@ -460,7 +605,8 @@
             const cls = filled 
               ? 'bg-blue-600 text-white border-blue-700 sticker-filled' 
               : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100';
-            const nameTooltip = STICKER_NAMES[id] ? ` - ${STICKER_NAMES[id]}` : '';
+            const pName = getStickerName(id, currentLanguage);
+            const nameTooltip = pName ? ` - ${pName}` : '';
               
             html += `<button id="btn-${id}" onclick="toggle('${id}', '${country.code}')" class="sticker-btn border rounded aspect-square flex items-center justify-center text-[10px] sm:text-xs font-semibold transition-colors ${cls}" title="${id}${nameTooltip}">${i}</button>`;
           }
@@ -490,7 +636,8 @@
           const cls = filled 
             ? 'bg-blue-600 text-white border-blue-700 sticker-filled' 
             : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100';
-          const nameTooltip = STICKER_NAMES[id] ? ` - ${STICKER_NAMES[id]}` : '';
+          const pName = getStickerName(id, currentLanguage);
+          const nameTooltip = pName ? ` - ${pName}` : '';
             
           html += `<button id="btn-${id}" onclick="toggle('${id}', 'sp-${sg.code}')" class="sticker-btn border rounded aspect-square flex items-center justify-center text-[10px] sm:text-xs font-semibold transition-colors ${cls}" title="${id}${nameTooltip}">${i}</button>`;
         }
@@ -526,7 +673,7 @@
     function confirmReset() {
       resetData();
       hideResetModal();
-      showToast('Se ha reiniciado el progreso de tu colección', 'success');
+      showToast(currentLanguage === 'EN' ? 'Your collection progress has been reset' : 'Se ha reiniciado el progreso de tu colección', 'success');
     }
 
     function updateMissingList() {
@@ -535,25 +682,31 @@
 
       const allMissing = Object.keys(stickers).filter(id => id !== 'lastUpdated' && !stickers[id]);
       if (allMissing.length === 0) {
+        const congratsText = UI_TRANSLATIONS[currentLanguage]['congrats'];
+        const printTitleTrans = currentLanguage === 'EN' ? 'Missing Stickers - Panini 2026' : 'Stickers Faltantes - Panini 2026';
         missingContainer.innerHTML = `
           <div class="missing-list-header">
             <div class="missing-list-header-left">
               <img src="img/World-Cup-2026-Logo.png" alt="FIFA 2026" class="logo">
-              <h1 class="title">Stickers Faltantes - Panini 2026</h1>
+              <h1 class="title">${printTitleTrans}</h1>
             </div>
-            <p class="stats">¡Felicidades! No te falta ningún sticker.</p>
+            <p class="stats">${congratsText}</p>
           </div>
         `;
         return;
       }
 
+      const printTitleTrans = currentLanguage === 'EN' ? 'Missing Stickers - Panini 2026' : 'Stickers Faltantes - Panini 2026';
+      const statsText = currentLanguage === 'EN' ? 'Total Missing' : 'Total Faltantes';
+      const ofText = currentLanguage === 'EN' ? 'of' : 'de';
+
       let html = `
         <div class="missing-list-header">
           <div class="missing-list-header-left">
             <img src="img/World-Cup-2026-Logo.png" alt="FIFA 2026" class="logo">
-            <h1 class="title">Stickers Faltantes - Panini 2026</h1>
+            <h1 class="title">${printTitleTrans}</h1>
           </div>
-          <p class="stats">Total Faltantes: <strong>${allMissing.length}</strong> de ${TOTAL_STICKERS}</p>
+          <p class="stats">${statsText}: <strong>${allMissing.length}</strong> ${ofText} ${TOTAL_STICKERS}</p>
         </div>
         <div class="missing-groups-grid">
       `;
@@ -572,16 +725,20 @@
 
           if (missingInCountry.length > 0) {
             totalMissingInGroup += missingInCountry.length;
+            const countryNameTrans = COUNTRY_TRANSLATIONS[currentLanguage] && COUNTRY_TRANSLATIONS[currentLanguage][country.name]
+              ? COUNTRY_TRANSLATIONS[currentLanguage][country.name]
+              : country.name;
             groupHtml += `<div class="missing-country-block">
               <div class="missing-country-header">
-                <img src="https://flagcdn.com/24x18/${country.flag}.png" class="flag-img" alt="${country.name}">
-                <span>${country.name}</span>
+                <img src="https://flagcdn.com/24x18/${country.flag}.png" class="flag-img" alt="${countryNameTrans}">
+                <span>${countryNameTrans}</span>
               </div>
               <div class="missing-list-grid">`;
             missingInCountry.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
               const num = id.replace(country.code, '');
-              const pName = STICKER_NAMES[id] || '';
-              groupHtml += `<div class="missing-sticker-box" title="${id}${pName ? ' - ' + pName : ''}">${num}</div>`;
+              const pName = getStickerName(id, currentLanguage);
+              const nameTooltip = pName ? ` - ${pName}` : '';
+              groupHtml += `<div class="missing-sticker-box" title="${id}${nameTooltip}">${num}</div>`;
             });
             groupHtml += `</div></div>`;
           }
@@ -611,8 +768,9 @@
               <div class="missing-list-grid special-list-grid">`;
           missingInGroup.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
             const num = id.replace(sg.code, '');
-            const pName = STICKER_NAMES[id] || '';
-            html += `<div class="missing-sticker-box" title="${id}${pName ? ' - ' + pName : ''}">${num}</div>`;
+            const pName = getStickerName(id, currentLanguage);
+            const nameTooltip = pName ? ` - ${pName}` : '';
+            html += `<div class="missing-sticker-box" title="${id}${nameTooltip}">${num}</div>`;
           });
           html += `</div></div></div>`;
         }

@@ -13,25 +13,44 @@
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <img src="img/World-Cup-2026-Logo.png" alt="FIFA 2026" class="h-8">
-        <h1 class="text-lg md:text-xl font-bold tracking-wide">Panini Copa Mundial 2026</h1>
+        <h1 id="app-title" data-i18n="title" class="text-lg md:text-xl font-bold tracking-wide">Panini Copa Mundial 2026</h1>
       </div>
-      <div class="flex gap-2">
+      <div class="flex gap-2 items-center">
         <button onclick="showResetModal()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          <span class="hidden md:inline">Reiniciar</span>
+          <span data-i18n="btn-reset" class="hidden md:inline">Reiniciar</span>
         </button>
         <button onclick="openFile()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-          <span class="hidden md:inline">Abrir</span>
+          <span data-i18n="btn-open" class="hidden md:inline">Abrir</span>
         </button>
         <button onclick="saveFile()" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-          <span class="hidden md:inline">Guardar</span>
+          <span data-i18n="btn-save" class="hidden md:inline">Guardar</span>
         </button>
         <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-          <span class="hidden md:inline">Imprimir Faltantes</span>
+          <span data-i18n="btn-print" class="hidden md:inline">Imprimir Faltantes</span>
         </button>
+
+        <!-- Language Switcher -->
+        <div class="relative inline-block text-left" id="lang-switcher-container">
+          <button onclick="toggleLangDropdown()" class="bg-[#002266] hover:bg-[#001144] border border-blue-400 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors shadow flex items-center gap-1.5">
+            <span>🌐</span>
+            <span id="current-lang-label">EN</span>
+            <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="lang-dropdown" class="origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-30">
+            <div class="py-1" role="menu" aria-orientation="vertical">
+              <button onclick="selectLanguage('EN')" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center justify-between" role="menuitem">
+                <span>EN - English</span>
+              </button>
+              <button onclick="selectLanguage('ES')" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 flex items-center justify-between" role="menuitem">
+                <span>ES - Español</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -40,14 +59,14 @@
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6 print-hide">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-          <h2 class="text-slate-500 font-semibold text-sm uppercase tracking-wider">Tu Progreso</h2>
+          <h2 id="label-progress-title" data-i18n="progress-title" class="text-slate-500 font-semibold text-sm uppercase tracking-wider">Tu Progreso</h2>
           <div class="text-3xl font-black text-[#003399]">
             <span id="stat-owned">0</span> <span class="text-slate-400 text-xl font-medium">/ 994</span>
           </div>
         </div>
         <div class="w-full md:w-2/3">
           <div class="flex justify-between text-sm font-bold text-slate-700 mb-1">
-            <span>Completado</span>
+            <span id="label-completed" data-i18n="progress-completed">Completado</span>
             <span id="stat-percent">0%</span>
           </div>
           <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner border border-slate-200">
@@ -64,11 +83,11 @@
 
   <div id="reset-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center print-hide">
     <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 m-4 transform transition-all scale-95 opacity-0" id="reset-modal-content">
-      <h3 class="text-lg font-bold text-slate-900 mb-2">¿Reiniciar colección?</h3>
-      <p class="text-slate-500 text-sm mb-6">Esta acción borrará todo tu progreso. No podrás recuperarlo después. ¿Estás seguro?</p>
+      <h3 id="label-modal-title" data-i18n="modal-title" class="text-lg font-bold text-slate-900 mb-2">¿Reiniciar colección?</h3>
+      <p id="label-modal-text" data-i18n="modal-text" class="text-slate-500 text-sm mb-6">Esta acción borrará todo tu progreso. No podrás recuperarlo después. ¿Estás seguro?</p>
       <div class="flex justify-end gap-3">
-        <button onclick="hideResetModal()" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">Cancelar</button>
-        <button onclick="confirmReset()" class="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm">Sí, borrar todo</button>
+        <button id="btn-modal-cancel" data-i18n="modal-cancel" onclick="hideResetModal()" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">Cancelar</button>
+        <button id="btn-modal-confirm" data-i18n="modal-confirm" onclick="confirmReset()" class="px-4 py-2 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors shadow-sm">Sí, borrar todo</button>
       </div>
     </div>
   </div>
