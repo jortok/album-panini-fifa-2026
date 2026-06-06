@@ -783,4 +783,122 @@
 
     window.addEventListener('beforeprint', updateMissingList);
 
+    function printMissing() {
+      const baseUrl = window.location.href.replace(/\/[^/]*$/, '/');
+      const logoUrl = baseUrl + 'img/World-Cup-2026-Logo.png';
+      const printTitleTrans = currentLanguage === 'EN' ? 'Missing Stickers - Panini 2026' : 'Stickers Faltantes - Panini 2026';
+      const statsText = currentLanguage === 'EN' ? 'Total Missing' : 'Total Faltantes';
+      const ofText = currentLanguage === 'EN' ? 'of' : 'de';
+      const allMissing = Object.keys(stickers).filter(id => id !== 'lastUpdated' && !stickers[id]);
+
+      let content = `
+        <div class="header">
+          <div class="header-left">
+            <img src="${logoUrl}" alt="FIFA 2026" class="logo">
+            <h1 class="title">${printTitleTrans}</h1>
+          </div>
+          <p class="stats">${statsText}: <strong>${allMissing.length}</strong> ${ofText} ${TOTAL_STICKERS}</p>
+        </div>
+        <div class="groups-grid">
+      `;
+
+      groups.forEach(group => {
+        let groupHtml = '';
+        let totalMissingInGroup = 0;
+        group.countries.forEach(country => {
+          const missingInCountry = [];
+          for (let i = 1; i <= 20; i++) {
+            const id = `${country.code}${i}`;
+            if (!stickers[id]) missingInCountry.push(id);
+          }
+          if (missingInCountry.length > 0) {
+            totalMissingInGroup += missingInCountry.length;
+            const countryNameTrans = COUNTRY_TRANSLATIONS[currentLanguage]?.[country.name] || country.name;
+            groupHtml += `<div class="country-block">
+              <div class="country-header">
+                <img src="https://flagcdn.com/24x18/${country.flag}.png" class="flag-img" alt="${countryNameTrans}">
+                <span>${countryNameTrans}</span>
+              </div>
+              <div class="sticker-grid">`;
+            missingInCountry.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
+              const num = id.replace(country.code, '');
+              const pName = getStickerName(id, currentLanguage);
+              groupHtml += `<div class="sticker-box" title="${id}${pName ? ' - ' + pName : ''}">${num}</div>`;
+            });
+            groupHtml += `</div></div>`;
+          }
+        });
+        if (totalMissingInGroup > 0) {
+          content += `<div class="group-card">
+            <div class="watermark">${group.name}</div>
+            <div class="group-content">${groupHtml}</div>
+          </div>`;
+        }
+      });
+
+      specialGroups.forEach(sg => {
+        const start = sg.startIndex !== undefined ? sg.startIndex : 1;
+        const missingInGroup = [];
+        for (let i = start; i <= sg.count; i++) {
+          const id = `${sg.code}${i}`;
+          if (!stickers[id]) missingInGroup.push(id);
+        }
+        if (missingInGroup.length > 0) {
+          content += `<div class="group-card">
+            <div class="watermark">${sg.code}</div>
+            <div class="group-content"><div class="sticker-grid">`;
+          missingInGroup.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
+            const num = id.replace(sg.code, '');
+            const pName = getStickerName(id, currentLanguage);
+            content += `<div class="sticker-box" title="${id}${pName ? ' - ' + pName : ''}">${num}</div>`;
+          });
+          content += `</div></div></div>`;
+        }
+      });
+
+      content += `</div>`;
+
+      const html = `<!DOCTYPE html>
+<html lang="${currentLanguage === 'EN' ? 'en' : 'es'}">
+<head>
+  <meta charset="UTF-8">
+  <title>${printTitleTrans}</title>
+  <style>
+    @page { size: letter portrait; margin: 0; }
+    * { box-sizing: border-box; }
+    body { margin: 12.7mm; padding: 0; font-family: sans-serif; background: white; color: black; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; }
+    .header-left { display: flex; align-items: center; gap: 6px; }
+    .logo { height: 14px; margin: 0; }
+    .title { font-size: 10px; font-weight: bold; margin: 0; }
+    .stats { font-size: 8px; color: #475569; margin: 0; }
+    .groups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .group-card { break-inside: avoid; border: 1px solid #cbd5e1; border-radius: 4px; overflow: hidden; position: relative; background: #fff; }
+    .watermark { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 48px; font-weight: 900; color: rgba(148,163,184,0.12); pointer-events: none; z-index: 0; line-height: 1; }
+    .group-content { padding: 4px 8px; position: relative; z-index: 1; }
+    .country-block { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+    .country-block:last-child { margin-bottom: 0; }
+    .country-header { display: flex; align-items: center; gap: 3px; font-size: 8px; font-weight: bold; min-width: 80px; flex-shrink: 0; }
+    .flag-img { border-radius: 1px; width: 12px; height: 9px; }
+    .sticker-grid { display: flex; flex-wrap: wrap; gap: 2px; }
+    .sticker-box { border: 1px solid #64748b; border-radius: 2px; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 7.5px; font-weight: bold; font-family: monospace; background: #f8fafc; color: #1e293b; }
+  </style>
+</head>
+<body>${content}</body>
+</html>`;
+
+      const win = window.open('', '_blank', 'width=850,height=650');
+      if (!win) {
+        alert(currentLanguage === 'EN' ? 'Please allow popups to print.' : 'Por favor permite ventanas emergentes para imprimir.');
+        return;
+      }
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => {
+        win.print();
+        win.addEventListener('afterprint', () => win.close());
+      }, 600);
+    }
+
     init();
