@@ -525,7 +525,7 @@
       stickers[id] = !stickers[id];
       stickers.lastUpdated = Date.now();
       saveData();
-      
+
       const btn = document.getElementById(`btn-${id}`);
       if (btn) {
         if (stickers[id]) {
@@ -536,9 +536,10 @@
           btn.classList.add('bg-slate-50', 'text-slate-500', 'border-slate-200');
         }
       }
-      
+
       updateCounter(sectionId);
       updateStats();
+      updateMissingList();
     }
 
     function updateCounter(sectionId) {
@@ -779,5 +780,7 @@
       html += `</div>`;
       missingContainer.innerHTML = html;
     }
+
+    window.addEventListener('beforeprint', updateMissingList);
 
     init();
