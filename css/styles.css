@@ -93,6 +93,7 @@
     flex-shrink: 0;
   }
   .missing-country-header .flag-img { border-radius: 1px; width: 12px; height: 9px; }
+  .country-code-badge { font-size: 6.5px; font-weight: 700; font-family: monospace; color: #64748b; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 2px; padding: 0 2px; letter-spacing: 0.02em; }
 
   .missing-list-grid {
     display: flex;

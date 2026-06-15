@@ -30,7 +30,7 @@
       { name: 'B', countries: [{ code: 'CAN', name: 'Canadá', flag: 'ca' }, { code: 'BIH', name: 'Bosnia', flag: 'ba' }, { code: 'QAT', name: 'Catar', flag: 'qa' }, { code: 'SUI', name: 'Suiza', flag: 'ch' }] },
       { name: 'C', countries: [{ code: 'BRA', name: 'Brasil', flag: 'br' }, { code: 'MAR', name: 'Marruecos', flag: 'ma' }, { code: 'HAI', name: 'Haití', flag: 'ht' }, { code: 'SCO', name: 'Escocia', flag: 'gb-sct' }] },
       { name: 'D', countries: [{ code: 'USA', name: 'EEUU', flag: 'us' }, { code: 'PAR', name: 'Paraguay', flag: 'py' }, { code: 'AUS', name: 'Australia', flag: 'au' }, { code: 'TUR', name: 'Turquía', flag: 'tr' }] },
-      { name: 'E', countries: [{ code: 'GER', name: 'Alemania', flag: 'de' }, { code: 'CUR', name: 'Curazao', flag: 'cw' }, { code: 'CIV', name: 'C. Marfil', flag: 'ci' }, { code: 'ECU', name: 'Ecuador', flag: 'ec' }] },
+      { name: 'E', countries: [{ code: 'GER', name: 'Alemania', flag: 'de' }, { code: 'CUW', name: 'Curazao', flag: 'cw' }, { code: 'CIV', name: 'C. Marfil', flag: 'ci' }, { code: 'ECU', name: 'Ecuador', flag: 'ec' }] },
       { name: 'F', countries: [{ code: 'NED', name: 'P. Bajos', flag: 'nl' }, { code: 'JPN', name: 'Japón', flag: 'jp' }, { code: 'SWE', name: 'Suecia', flag: 'se' }, { code: 'TUN', name: 'Túnez', flag: 'tn' }] },
       { name: 'G', countries: [{ code: 'BEL', name: 'Bélgica', flag: 'be' }, { code: 'EGY', name: 'Egipto', flag: 'eg' }, { code: 'IRN', name: 'Irán', flag: 'ir' }, { code: 'NZL', name: 'N. Zelanda', flag: 'nz' }] },
       { name: 'H', countries: [{ code: 'ESP', name: 'España', flag: 'es' }, { code: 'CPV', name: 'Cabo Verde', flag: 'cv' }, { code: 'KSA', name: 'Arabia', flag: 'sa' }, { code: 'URU', name: 'Uruguay', flag: 'uy' }] },
@@ -733,6 +733,7 @@
               <div class="missing-country-header">
                 <img src="https://flagcdn.com/24x18/${country.flag}.png" class="flag-img" alt="${countryNameTrans}">
                 <span>${countryNameTrans}</span>
+                <span class="country-code-badge">${country.code}</span>
               </div>
               <div class="missing-list-grid">`;
             missingInCountry.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
@@ -818,6 +819,7 @@
               <div class="country-header">
                 <img src="https://flagcdn.com/24x18/${country.flag}.png" class="flag-img" alt="${countryNameTrans}">
                 <span>${countryNameTrans}</span>
+                <span class="country-code">${country.code}</span>
               </div>
               <div class="sticker-grid">`;
             missingInCountry.sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(id => {
@@ -880,6 +882,7 @@
     .country-block:last-child { margin-bottom: 0; }
     .country-header { display: flex; align-items: center; gap: 3px; font-size: 8px; font-weight: bold; min-width: 80px; flex-shrink: 0; }
     .flag-img { border-radius: 1px; width: 12px; height: 9px; }
+    .country-code { font-size: 6.5px; font-weight: 700; font-family: monospace; color: #64748b; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 2px; padding: 0 2px; letter-spacing: 0.02em; }
     .sticker-grid { display: flex; flex-wrap: wrap; gap: 2px; }
     .sticker-box { border: 1px solid #64748b; border-radius: 2px; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 7.5px; font-weight: bold; font-family: monospace; background: #f8fafc; color: #1e293b; }
   </style>
